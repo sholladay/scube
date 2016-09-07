@@ -1,0 +1,51 @@
+{
+  "name": "scube",
+  "version": "0.0.0",
+  "description": "Manage your S3 buckets.",
+  "homepage": "https://github.com/sholladay/scube",
+  "main": "index.js",
+  "author": {
+    "name": "Seth Holladay",
+    "url": "http://seth-holladay.com",
+    "email": "me@seth-holladay.com"
+  },
+  "scripts": {
+    "test": "xo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sholladay/scube.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sholladay/scube/issues",
+    "email": "me@seth-holladay.com"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "license": "MPL-2.0",
+  "files": [
+    "index.js"
+  ],
+  "dependencies": {
+    "aws-sdk": "^2.5.1"
+  },
+  "devDependencies": {
+    "eslint-config-tidy": "^0.3.0",
+    "xo": "^0.16.0"
+  },
+  "keywords": [
+    "Amazon",
+    "AWS",
+    "S3",
+    "SDK",
+    "simple",
+    "storage",
+    "service",
+    "client",
+    "wrapper"
+  ],
+  "xo": {
+    "extend": "tidy"
+  }
+}
