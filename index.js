@@ -153,44 +153,34 @@ class Scube {
 
     // Custom methods.
 
-    deletePrefix(input) {
+    async deletePrefix(input) {
         const option = Object.assign({}, input, {
             // List all individual objects under the prefix.
             delimiter : ''
         });
-        return new Promise((resolve, reject) => {
-            const go = (override) => {
-                const config = Object.assign(option, override);
-                let list;
-                this.listObjects(config)
-                    .then((res) => {
-                        list = res;
-                        if (!list.contents.length) {
-                            return;
-                        }
-                        return this.deleteObjects({
-                            delete : capKeys({
-                                objects : list.contents.map((obj) => {
-                                    return capKeys({
-                                        key : obj.Key
-                                    });
-                                })
-                            })
-                        });
+
+        const loop = async (override) => {
+            const config = Object.assign(option, override);
+
+            const list = await this.listObjects(config);
+
+            if (list.contents.length > 0) {
+                await this.deleteObjects({
+                    delete : capKeys({
+                        objects : list.contents.map((obj) => {
+                            return capKeys({
+                                key : obj.Key
+                            });
+                        })
                     })
-                    .then(() => {
-                        if (list.isTruncated) {
-                            go({ continuationToken : list.nextContinuationToken });
-                            return;
-                        }
-                        resolve();
-                    })
-                    .catch((err) => {
-                        reject(err);
-                    });
-            };
-            go();
-        });
+                });
+            }
+
+            if (list.isTruncated) {
+                return loop({ continuationToken : list.nextContinuationToken });
+            }
+        };
+        await loop();
     }
 
     deleteDir(option) {
