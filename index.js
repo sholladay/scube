@@ -63,9 +63,6 @@ class Scube {
 
         this._service = new S3({
             region : config.region,
-            // s3ForcePathStyle : true,
-            // sslEnabled : true,
-            // signatureVersion : 'v4',
             params : capKeys({
                 bucket    : config.bucket,
                 delimiter : config.delimiter

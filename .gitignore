@@ -1,17 +1,3 @@
 # Dependencies are installed manually or using a build process, so they
 # can benefit from machine-specific compiling, etc.
 node_modules
-
-# Build artifacts are unique to each developer.
-build
-latest-build
-report
-
-# Log data is unique to each developer.
-log
-
-# Operating system data is unique to each developer.
-.DS_Store
-
-# IDE data is unique to each developer.
-.idea

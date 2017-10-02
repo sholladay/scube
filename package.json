@@ -1,7 +1,7 @@
 {
     "name": "scube",
     "version": "0.1.0",
-    "description": "Manage your S3 buckets.",
+    "description": "Manage your S3 buckets",
     "homepage": "https://github.com/sholladay/scube",
     "main": "index.js",
     "author": {
@@ -31,8 +31,8 @@
         "aws-sdk": "^2.5.1"
     },
     "devDependencies": {
-        "eslint-config-tidy": "^0.4.0",
-        "xo": "^0.17.1"
+        "eslint-config-tidy": "^0.5.0",
+        "xo": "^0.18.2"
     },
     "keywords": [
         "Amazon",
