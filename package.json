@@ -28,7 +28,8 @@
         "index.js"
     ],
     "dependencies": {
-        "aws-sdk": "^2.5.1"
+        "aws-sdk": "^2.5.1",
+        "camelcase-keys": "^4.1.0"
     },
     "devDependencies": {
         "eslint-config-tidy": "^0.5.0",

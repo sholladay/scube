@@ -1,6 +1,7 @@
 'use strict';
 
 const { S3 } = require('aws-sdk');
+const camelcaseKeys = require('camelcase-keys');
 
 const makeCallback = (resolve, reject) => {
     return (err, data) => {
@@ -16,10 +17,6 @@ const capitalize = (str) => {
     return str[0].toUpperCase() + str.substring(1);
 };
 
-const decapitalize = (str) => {
-    return str[0].toLowerCase() + str.substring(1);
-};
-
 // Map object keys to the unconventional format expected by the AWS SDK.
 const capKeys = (obj) => {
     if (!obj) {
@@ -29,19 +26,6 @@ const capKeys = (obj) => {
     const target = {};
     Object.keys(obj).forEach((key) => {
         target[capitalize(key)] = obj[key];
-    });
-
-    return target;
-};
-
-const decapKeys = (obj) => {
-    if (!obj) {
-        return obj;
-    }
-
-    const target = {};
-    Object.keys(obj).forEach((key) => {
-        target[decapitalize(key)] = obj[key];
     });
 
     return target;
@@ -79,7 +63,7 @@ class Scube {
     createBucket(param) {
         return new Promise((resolve, reject) => {
             this._service.createBucket(capKeys(param), makeCallback(resolve, reject));
-        }).then(decapKeys);
+        }).then(camelcaseKeys);
     }
 
     deleteBucket(param) {
@@ -97,7 +81,7 @@ class Scube {
     deleteObjects(param) {
         return new Promise((resolve, reject) => {
             this._service.deleteObjects(capKeys(param), makeCallback(resolve, reject));
-        }).then(decapKeys);
+        }).then(camelcaseKeys);
     }
 
     getObject(param) {
@@ -133,7 +117,7 @@ class Scube {
     listObjects(param) {
         return new Promise((resolve, reject) => {
             this._service.listObjectsV2(capKeys(param), makeCallback(resolve, reject));
-        }).then(decapKeys);
+        }).then(camelcaseKeys);
     }
 
     putObject(param) {
@@ -145,7 +129,7 @@ class Scube {
     upload(param, option) {
         return new Promise((resolve, reject) => {
             this._service.upload(capKeys(param), option, makeCallback(resolve, reject));
-        }).then(decapKeys);
+        }).then(camelcaseKeys);
     }
 
     // Custom methods.
