@@ -1,7 +1,8 @@
 'use strict';
 
-const { S3 } = require('aws-sdk');
+const S3 = require('aws-sdk/clients/s3');
 const camelcaseKeys = require('camelcase-keys');
+const joi = require('joi');
 
 const makeCallback = (resolve, reject) => {
     return (err, data) => {
@@ -33,21 +34,20 @@ const capKeys = (obj) => {
 
 class Scube {
     constructor(option) {
-        const config = Object.assign(
-            {
-                region    : 'us-east-1',
-                delimiter : '/'
-            },
-            option
-        );
-
-        if (!config.bucket) {
-            throw new Error('A bucket name is required.');
-        }
+        const config = joi.attempt(option, joi.object().required().keys({
+            region    : joi.string().default('us-east-1'),
+            delimiter : joi.string().default('/'),
+            bucket    : joi.string().required().hostname().min(1),
+            publicKey : joi.string().required().token().min(20),
+            secretKey : joi.string().required().base64().min(40)
+        }));
 
         this._service = new S3({
-            region : config.region,
-            params : capKeys({
+            apiVersion      : '2006-03-01',
+            region          : config.region,
+            accessKeyId     : config.publicKey,
+            secretAccessKey : config.secretKey,
+            params          : capKeys({
                 bucket    : config.bucket,
                 delimiter : config.delimiter
             })
@@ -175,7 +175,7 @@ class Scube {
     }
 
     listDir(option) {
-        const config = Object.assign({}, option);
+        const config = Object.assign({ prefix : '/' }, option);
 
         if (!config.prefix.endsWith('/')) {
             config.prefix += '/';

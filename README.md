@@ -5,7 +5,7 @@
 ## Why?
 
  - High-level, [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)-based API.
- - Fixes the quirks of the [official SDK](https://github.com/aws/aws-sdk-js).
+ - Uses objects with camelcase keys, unlike the [official SDK](https://github.com/aws/aws-sdk-js).
  - Enforces best practices and sensible defaults.
 
 ## Install
@@ -26,7 +26,9 @@ Create a new S3 client.
 
 ```js
 const myBucket = new Scube({
-    bucket : 'my-bucket'
+    bucket    : 'my-bucket',
+    publicKey : process.env.AWS_ACCESS_KEY_ID,
+    secretKey : process.env.AWS_SECRET_ACCESS_KEY
 });
 ```
 
@@ -58,19 +60,28 @@ myBucket.deleteDir({ prefix : 'foo' }).then((data) => {
 
 Please see Amazon's [API documentation](http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html) for details on the option and response properties.
 
-### Scube(option)
+### new Scube(option)
+
+Returns a new [instance](#instance).
 
 #### option
 
 Type: `object`
 
-Default configuration for all client actions.
+Default configuration for all client actions. You can override its values for specific calls, if needed.
 
 ##### bucket
 
 Type: `string`
 
-The default bucket name to use. This is a global (worldwide) namespace to store your data in.
+The default bucket name to use. A bucket is a unique, worldwide namespace to store your data in. Choose it carefully.
+
+##### region
+
+Type: `string`<br>
+Default: `us-east-1`
+
+The availability zone for your bucket.
 
 ##### delimiter
 
@@ -78,6 +89,18 @@ Type: `string`<br>
 Default: `/`
 
 The default delimiter character to use. Helpful to group together keys starting with a `prefix` not followed by a `delimiter`.
+
+##### publicKey
+
+Type: `string`
+
+The public part of your credential keypair for authenticating with AWS.
+
+##### secretKey
+
+Type: `string`
+
+The private part of your credential keypair for authenticating with AWS.
 
 ### Instance
 
@@ -97,6 +120,7 @@ Delete all keys within the `option.prefix` directory.
 
 ## Related
 
+ - [hapi-s3](https://github.com/sholladay/hapi-s3) - Use Amazon S3 in server routes
  - [delivr](https://github.com/sholladay/delivr) - Build your code and ship it to S3
  - [build-files](https://github.com/sholladay/build-files) - Read the files from your build
  - [build-keys](https://github.com/sholladay/build-keys) - Get the paths of files from your build
