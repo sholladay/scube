@@ -1,6 +1,6 @@
 # scube [![Build status for scube](https://img.shields.io/circleci/project/sholladay/scube/master.svg "Build Status")](https://circleci.com/gh/sholladay/scube "Builds")
 
-> Manage your S3 buckets
+> Manage your [S3](https://aws.amazon.com/s3/) buckets
 
 ## Why?
 
