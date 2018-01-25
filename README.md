@@ -1,12 +1,15 @@
-# scube [![Build status for scube](https://img.shields.io/circleci/project/sholladay/scube/master.svg "Build Status")](https://circleci.com/gh/sholladay/scube "Builds")
+# scube [![Build status for Scube](https://img.shields.io/circleci/project/sholladay/scube/master.svg "Build Status")](https://circleci.com/gh/sholladay/scube "Builds")
 
 > Manage your [S3](https://aws.amazon.com/s3/) buckets
 
+Scube is just a thin convenience wrapper around the [AWS SDK](https://github.com/aws/aws-sdk-js), specifically for S3.
+
 ## Why?
 
- - High-level, [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)-based API.
- - Uses objects with camelcase keys, unlike the [official SDK](https://github.com/aws/aws-sdk-js).
- - Enforces best practices and sensible defaults.
+ - Easier to use with [`async` / `await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function#Description) & [Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). All methods return a `Promise`, without the need to call `.promise()` every time, so your code remains [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
+ - Uses idiomatic, camel case JavaScript property names (e.g. `bucket`), unlike the official SDK, which uses Pascal case names (e.g. `Bucket`).
+ - Encourages best practices, like hostname compliant bucket names, by requiring and validating certain configuration in the constructor, while still allowing you to override these for each request.
+ - Provides helpful utilities and default configuration for simulating directories on S3 with `/` as a separator.
 
 ## Install
 
@@ -16,36 +19,30 @@ npm install scube --save
 
 ## Usage
 
-Get it into your program.
+Scube uses the philosophy that apps generally want to perform actions on a single bucket, so we force you to set that bucket as the default and then use the Scube instance to represent the bucket.
+
+Below, we create `my-bucket` on S3.
 
 ```js
 const Scube = require('scube');
-```
 
-Create a new S3 client.
-
-```js
 const myBucket = new Scube({
     bucket    : 'my-bucket',
     publicKey : process.env.AWS_ACCESS_KEY_ID,
     secretKey : process.env.AWS_SECRET_ACCESS_KEY
 });
-```
-
-Create a bucket.
-
-```js
 myBucket.createBucket().then((data) => {
     console.log('Bucket created:', data.location);
 });
 ```
+_Note that you can always pass `bucket` to each call to override the default bucket, but we encourage you to make a new Scube instance instead.
 
 You can also work with directories as first-class citizens.
 
 ```js
 myBucket.listDir({ prefix : 'foo' }).then((data) => {
     console.log('Directory contents:', data.contents);
-})
+});
 ```
 
 Delete a directory.
@@ -118,9 +115,13 @@ Delete all keys that start with `option.prefix`.
 
 Delete all keys within the `option.prefix` directory.
 
+#### .s3
+
+The underlying AWS SDK being used. This is useful when you want to use streams instead of Promises. Note that if you use streams a lot, you are probably better off just using the AWS SDK directly instead of via Scube.
+
 ## Related
 
- - [hapi-s3](https://github.com/sholladay/hapi-s3) - Use Amazon S3 in server routes
+ - [hapi-s3](https://github.com/sholladay/hapi-s3) - Use [Amazon S3](https://aws.amazon.com/s3/) in your [hapi](https://hapijs.com) server
  - [delivr](https://github.com/sholladay/delivr) - Build your code and ship it to S3
  - [build-files](https://github.com/sholladay/build-files) - Read the files from your build
  - [build-keys](https://github.com/sholladay/build-keys) - Get the paths of files from your build

@@ -4,32 +4,16 @@ const S3 = require('aws-sdk/clients/s3');
 const camelcaseKeys = require('camelcase-keys');
 const joi = require('joi');
 
-const makeCallback = (resolve, reject) => {
-    return (err, data) => {
-        if (err) {
-            reject(err);
-            return;
-        }
-        resolve(data);
-    };
-};
-
 const capitalize = (str) => {
     return str[0].toUpperCase() + str.substring(1);
 };
 
 // Map object keys to the unconventional format expected by the AWS SDK.
 const capKeys = (obj) => {
-    if (!obj) {
-        return obj;
-    }
-
-    const target = {};
-    Object.keys(obj).forEach((key) => {
+    return obj && Object.keys(obj).reduce((target, key) => {
         target[capitalize(key)] = obj[key];
-    });
-
-    return target;
+        return target;
+    }, {});
 };
 
 class Scube {
@@ -42,7 +26,7 @@ class Scube {
             secretKey : joi.string().required().base64().min(40)
         }));
 
-        this._service = new S3({
+        this.s3 = new S3({
             apiVersion      : '2006-03-01',
             region          : config.region,
             accessKeyId     : config.publicKey,
@@ -55,90 +39,65 @@ class Scube {
     }
 
     copyObject(param) {
-        return new Promise((resolve, reject) => {
-            this._service.copyObject(capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.copyObject(capKeys(param)).promise();
     }
 
     createBucket(param) {
-        return new Promise((resolve, reject) => {
-            this._service.createBucket(capKeys(param), makeCallback(resolve, reject));
-        }).then(camelcaseKeys);
+        return this.s3.createBucket(capKeys(param)).promise().then(camelcaseKeys);
     }
 
     deleteBucket(param) {
-        return new Promise((resolve, reject) => {
-            this._service.deleteBucket(capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.deleteBucket(capKeys(param)).promise();
     }
 
     deleteObject(param) {
-        return new Promise((resolve, reject) => {
-            this._service.deleteObject(capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.deleteObject(capKeys(param)).promise();
     }
 
     deleteObjects(param) {
-        return new Promise((resolve, reject) => {
-            this._service.deleteObjects(capKeys(param), makeCallback(resolve, reject));
-        }).then(camelcaseKeys);
+        return this.s3.deleteObjects(capKeys(param)).promise().then(camelcaseKeys);
     }
 
     getObject(param) {
-        return new Promise((resolve, reject) => {
-            this._service.getObject(capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.getObject(capKeys(param)).promise();
     }
 
     getSignedUrl(operation, param) {
-        return new Promise((resolve, reject) => {
-            this._service.getSignedUrl(operation, capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.getSignedUrl(operation, capKeys(param)).promise();
     }
 
     headBucket(param) {
-        return new Promise((resolve, reject) => {
-            this._service.headBucket(capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.headBucket(capKeys(param)).promise();
     }
 
     headObject(param) {
-        return new Promise((resolve, reject) => {
-            this._service.headObject(capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.headObject(capKeys(param)).promise();
     }
 
     listBuckets(param) {
-        return new Promise((resolve, reject) => {
-            this._service.listBuckets(capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.listBuckets(capKeys(param)).promise();
     }
 
     listObjects(param) {
-        return new Promise((resolve, reject) => {
-            this._service.listObjectsV2(capKeys(param), makeCallback(resolve, reject));
-        }).then(camelcaseKeys);
+        return this.s3.listObjectsV2(capKeys(param)).promise().then(camelcaseKeys);
     }
 
     putObject(param) {
-        return new Promise((resolve, reject) => {
-            this._service.putObject(capKeys(param), makeCallback(resolve, reject));
-        });
+        return this.s3.putObject(capKeys(param)).promise();
     }
 
     upload(param, option) {
-        return new Promise((resolve, reject) => {
-            this._service.upload(capKeys(param), option, makeCallback(resolve, reject));
-        }).then(camelcaseKeys);
+        return this.s3.upload(capKeys(param), option).promise().then(camelcaseKeys);
     }
 
     // Custom methods.
 
     async deletePrefix(input) {
-        const option = Object.assign({}, input, {
+        const option = {
+            ...input,
             // List all individual objects under the prefix.
             delimiter : ''
-        });
+        };
 
         const loop = async (override) => {
             const config = Object.assign(option, override);
@@ -165,7 +124,7 @@ class Scube {
     }
 
     deleteDir(option) {
-        const config = Object.assign({}, option);
+        const config = { ...option };
 
         if (!config.prefix.endsWith('/')) {
             config.prefix += '/';
@@ -175,7 +134,10 @@ class Scube {
     }
 
     listDir(option) {
-        const config = Object.assign({ prefix : '/' }, option);
+        const config = {
+            prefix : '/',
+            ...option
+        };
 
         if (!config.prefix.endsWith('/')) {
             config.prefix += '/';
