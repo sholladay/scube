@@ -24,7 +24,7 @@ class Scube {
             bucket    : joi.string().required().hostname().min(1),
             publicKey : joi.string().required().token().min(20),
             secretKey : joi.string().required().base64().min(40),
-            endpoint  : joi.object().optional()
+            endpoint  : joi.string().optional()
         }));
 
         this.s3 = new S3({
