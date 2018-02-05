@@ -1,3 +1,4 @@
+
 'use strict';
 
 const S3 = require('aws-sdk/clients/s3');
@@ -23,7 +24,8 @@ class Scube {
             delimiter : joi.string().default('/'),
             bucket    : joi.string().required().hostname().min(1),
             publicKey : joi.string().required().token().min(20),
-            secretKey : joi.string().required().base64().min(40)
+            secretKey : joi.string().required().base64().min(40),
+            endpoint  : joi.object().optional()
         }));
 
         this.s3 = new S3({
@@ -34,7 +36,8 @@ class Scube {
             params          : capKeys({
                 bucket    : config.bucket,
                 delimiter : config.delimiter
-            })
+            }),
+            endpoint      : config.endpoint
         });
     }
 
