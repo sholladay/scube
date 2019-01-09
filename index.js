@@ -28,15 +28,15 @@ class Scube {
         }));
 
         this.s3 = new S3({
-            apiVersion      : '2006-03-01',
-            region          : config.region,
-            accessKeyId     : config.publicKey,
-            secretAccessKey : config.secretKey,
-            params          : capKeys({
+            accessKeyId : config.publicKey,
+            apiVersion  : '2006-03-01',
+            endpoint    : config.endpoint,
+            params      : capKeys({
                 bucket    : config.bucket,
                 delimiter : config.delimiter
             }),
-            endpoint      : config.endpoint
+            region          : config.region,
+            secretAccessKey : config.secretKey
         });
     }
     copyObject(param) {

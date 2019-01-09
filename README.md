@@ -1,4 +1,4 @@
-# scube [![Build status for Scube](https://img.shields.io/circleci/project/sholladay/scube/master.svg "Build Status")](https://circleci.com/gh/sholladay/scube "Builds")
+# scube [![Build status for Scube](https://travis-ci.com/sholladay/scube.svg?branch=master "Build Status")](https://travis-ci.com/sholladay/scube "Builds")
 
 > Manage your [S3](https://aws.amazon.com/s3/) buckets
 
