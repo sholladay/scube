@@ -29,13 +29,13 @@
     ],
     "dependencies": {
         "aws-sdk": "^2.5.1",
-        "camelcase-keys": "^4.1.0",
-        "joi": "^13.0.1"
+        "camelcase-keys": "^5.0.0",
+        "joi": "^14.3.1"
     },
     "devDependencies": {
-        "ava": "^0.24.0",
-        "eslint-config-tidy": "^0.5.0",
-        "xo": "^0.18.2"
+        "ava": "^1.0.1",
+        "eslint-config-tidy": "^0.7.0",
+        "xo": "^0.23.0"
     },
     "keywords": [
         "Amazon",

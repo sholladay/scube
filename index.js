@@ -5,7 +5,7 @@ const camelcaseKeys = require('camelcase-keys');
 const joi = require('joi');
 
 const capitalize = (str) => {
-    return str[0].toUpperCase() + str.substring(1);
+    return str && str[0].toUpperCase() + str.substring(1);
 };
 
 // Map object keys to the unconventional format expected by the AWS SDK.
@@ -39,61 +39,50 @@ class Scube {
             endpoint      : config.endpoint
         });
     }
-
     copyObject(param) {
         return this.s3.copyObject(capKeys(param)).promise();
     }
-
-    createBucket(param) {
-        return this.s3.createBucket(capKeys(param)).promise().then(camelcaseKeys);
+    async createBucket(param) {
+        const bucket = await this.s3.createBucket(capKeys(param)).promise();
+        return camelcaseKeys(bucket);
     }
-
     deleteBucket(param) {
         return this.s3.deleteBucket(capKeys(param)).promise();
     }
-
     deleteObject(param) {
         return this.s3.deleteObject(capKeys(param)).promise();
     }
-
-    deleteObjects(param) {
-        return this.s3.deleteObjects(capKeys(param)).promise().then(camelcaseKeys);
+    async deleteObjects(param) {
+        const response = await this.s3.deleteObjects(capKeys(param)).promise();
+        return camelcaseKeys(response);
     }
-
     getObject(param) {
         return this.s3.getObject(capKeys(param)).promise();
     }
-
     getSignedUrl(operation, param) {
-        return this.s3.getSignedUrl(operation, capKeys(param)).promise();
+        return this.s3.getSignedUrl(operation, capKeys(param));
     }
-
     headBucket(param) {
         return this.s3.headBucket(capKeys(param)).promise();
     }
-
     headObject(param) {
         return this.s3.headObject(capKeys(param)).promise();
     }
-
     listBuckets(param) {
         return this.s3.listBuckets(capKeys(param)).promise();
     }
-
-    listObjects(param) {
-        return this.s3.listObjectsV2(capKeys(param)).promise().then(camelcaseKeys);
+    async listObjects(param) {
+        const objects = await this.s3.listObjectsV2(capKeys(param)).promise();
+        return camelcaseKeys(objects);
     }
-
     putObject(param) {
         return this.s3.putObject(capKeys(param)).promise();
     }
-
-    upload(param, option) {
-        return this.s3.upload(capKeys(param), option).promise().then(camelcaseKeys);
+    async upload(param, option) {
+        const response = await this.s3.upload(capKeys(param), option).promise();
+        return camelcaseKeys(response);
     }
-
     // Custom methods.
-
     async deletePrefix(input) {
         const option = {
             ...input,
@@ -124,7 +113,6 @@ class Scube {
         };
         await loop();
     }
-
     deleteDir(option) {
         const config = { ...option };
 
@@ -134,7 +122,6 @@ class Scube {
 
         return this.deletePrefix(config);
     }
-
     listDir(option) {
         const config = {
             prefix : '/',
