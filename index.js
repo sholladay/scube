@@ -19,12 +19,13 @@ const capKeys = (obj) => {
 class Scube {
     constructor(option) {
         const config = joi.attempt(option, joi.object().required().keys({
-            region    : joi.string().default('us-east-1'),
-            delimiter : joi.string().default('/'),
-            bucket    : joi.string().required().hostname().min(1),
-            publicKey : joi.string().required().token().min(20),
-            secretKey : joi.string().required().base64().min(40),
-            endpoint  : joi.string().optional()
+            region           : joi.string().optional().default('us-east-1'),
+            delimiter        : joi.string().optional().default('/'),
+            bucket           : joi.string().required().hostname().min(1),
+            publicKey        : joi.string().required().token().min(20),
+            secretKey        : joi.string().required().base64().min(40),
+            endpoint         : joi.string().optional(),
+            s3ForcePathStyle : joi.boolean().optional().default(false)
         }));
 
         this.s3 = new S3({
@@ -35,8 +36,9 @@ class Scube {
                 bucket    : config.bucket,
                 delimiter : config.delimiter
             }),
-            region          : config.region,
-            secretAccessKey : config.secretKey
+            region           : config.region,
+            secretAccessKey  : config.secretKey,
+            s3ForcePathStyle : config.s3ForcePathStyle
         });
     }
     copyObject(param) {
