@@ -2,10 +2,10 @@
 
 const S3 = require('aws-sdk/clients/s3');
 const camelcaseKeys = require('camelcase-keys');
-const joi = require('joi');
+const joi = require('@hapi/joi');
 
 const capitalize = (str) => {
-    return str && str[0].toUpperCase() + str.substring(1);
+    return str && str[0].toUpperCase() + str.slice(1);
 };
 
 // Map object keys to the unconventional format expected by the AWS SDK.
@@ -84,7 +84,6 @@ class Scube {
         const response = await this.s3.upload(capKeys(param), option).promise();
         return camelcaseKeys(response);
     }
-    // Custom methods.
     async deletePrefix(input) {
         const option = {
             ...input,
