@@ -14,7 +14,7 @@ Scube is just a thin convenience wrapper around the [AWS SDK](https://github.com
 ## Install
 
 ```sh
-npm install scube --save
+npm install scube
 ```
 
 ## Usage
