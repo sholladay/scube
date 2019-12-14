@@ -65,13 +65,33 @@ Returns a new [instance](#instance).
 
 Type: `object`
 
-Default configuration for all client actions. You can override its values for specific calls, if needed.
+The default configuration for all client actions. You can override its values for specific calls, if needed.
 
 ##### bucket
 
 Type: `string`
 
-The default bucket name to use. A bucket is a unique, worldwide namespace to store your data in. Choose it carefully.
+The bucket name to use. A bucket is a unique, worldwide namespace to store your data in. Choose it carefully.
+
+##### delimiter
+
+Type: `string`<br>
+Default: `/`
+
+The delimiter character to use. Helpful to group together keys starting with a `prefix` not followed by a `delimiter`.
+
+##### forcePathStyle
+
+Type: `boolean`<br>
+Default: `false`
+
+Whether to use path style requests, as in `s3.amazonaws.com/<bucket>` instead of `<bucket>.s3.amazonaws.com`.
+
+##### publicKey
+
+Type: `string`
+
+The public part of your credential keypair for authenticating with AWS.
 
 ##### region
 
@@ -79,19 +99,6 @@ Type: `string`<br>
 Default: `us-east-1`
 
 The availability zone for your bucket.
-
-##### delimiter
-
-Type: `string`<br>
-Default: `/`
-
-The default delimiter character to use. Helpful to group together keys starting with a `prefix` not followed by a `delimiter`.
-
-##### publicKey
-
-Type: `string`
-
-The public part of your credential keypair for authenticating with AWS.
 
 ##### secretKey
 
