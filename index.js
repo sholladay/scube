@@ -29,25 +29,25 @@ class Scube {
         }));
 
         const clientConfig = {
-			apiVersion: "2006-03-01",
-			endpoint: config.endpoint,
-			params: capKeys({
-				bucket: config.bucket,
-				delimiter: config.delimiter,
-			}),
-			region: config.region,
-			s3ForcePathStyle: config.forcePathStyle
-		};
+            apiVersion : '2006-03-01',
+            endpoint   : config.endpoint,
+            params     : capKeys({
+                bucket    : config.bucket,
+                delimiter : config.delimiter
+            }),
+            region           : config.region,
+            s3ForcePathStyle : config.forcePathStyle
+        };
 
-		if (config.publicKey) {
-			clientConfig.accessKeyId = config.publicKey;
-		}
+        if (config.publicKey) {
+            clientConfig.accessKeyId = config.publicKey;
+        }
 
-		if (config.secretKey) {
-			clientConfig.secretAccessKey = config.secretKey;
-		}
+        if (config.secretKey) {
+            clientConfig.secretAccessKey = config.secretKey;
+        }
 
-		this.s3 = new S3(clientConfig);
+        this.s3 = new S3(clientConfig);
     }
     copyObject(param) {
         return this.s3.copyObject(capKeys(param)).promise();
