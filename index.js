@@ -22,24 +22,32 @@ class Scube {
             region         : joi.string().optional().default('us-east-1'),
             delimiter      : joi.string().optional().default('/'),
             bucket         : joi.string().required().hostname().min(1),
-            publicKey      : joi.string().required().token().min(20),
-            secretKey      : joi.string().required().base64().min(40),
+            publicKey      : joi.string().optional().token().min(20),
+            secretKey      : joi.string().optional().base64().min(40),
             endpoint       : joi.string().optional(),
             forcePathStyle : joi.boolean().optional().default(false)
         }));
 
-        this.s3 = new S3({
-            accessKeyId : config.publicKey,
-            apiVersion  : '2006-03-01',
-            endpoint    : config.endpoint,
-            params      : capKeys({
+        const clientConfig = {
+            apiVersion : '2006-03-01',
+            endpoint   : config.endpoint,
+            params     : capKeys({
                 bucket    : config.bucket,
                 delimiter : config.delimiter
             }),
             region           : config.region,
-            secretAccessKey  : config.secretKey,
             s3ForcePathStyle : config.forcePathStyle
-        });
+        };
+
+        if (config.publicKey) {
+            clientConfig.accessKeyId = config.publicKey;
+        }
+
+        if (config.secretKey) {
+            clientConfig.secretAccessKey = config.secretKey;
+        }
+
+        this.s3 = new S3(clientConfig);
     }
     copyObject(param) {
         return this.s3.copyObject(capKeys(param)).promise();
